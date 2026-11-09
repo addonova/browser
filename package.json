@@ -1,0 +1,72 @@
+{
+  "name": "@addonova/browser",
+  "version": "0.1.0",
+  "description": "Unified, Promise-based Browser Extension APIs.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./chrome": {
+      "types": "./dist/entries/chrome.d.ts",
+      "import": "./dist/entries/chrome.js"
+    },
+    "./chromium": {
+      "types": "./dist/entries/chromium.d.ts",
+      "import": "./dist/entries/chromium.js"
+    },
+    "./firefox": {
+      "types": "./dist/entries/firefox.d.ts",
+      "import": "./dist/entries/firefox.js"
+    },
+    "./edge": {
+      "types": "./dist/entries/edge.d.ts",
+      "import": "./dist/entries/edge.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:examples": "npm run build && node scripts/build-examples.mjs",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "guchho-test run",
+    "test:watch": "guchho-test watch"
+  },
+  "keywords": [
+    "browser-extension",
+    "webextension",
+    "cross-browser",
+    "chrome",
+    "firefox",
+    "edge",
+    "addonova"
+  ],
+  "author": "Hemanta Gayen",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/addonova/browser.git"
+  },
+  "allowScripts": {
+    "guchho@1.0.9": true
+  },
+  "devDependencies": {
+    "@guchho/test": "^0.0.2",
+    "@types/node": "^26.6.6",
+    "guchho": "1.0.9",
+    "typescript": "^7.0.2"
+  }
+}

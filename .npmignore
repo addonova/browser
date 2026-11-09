@@ -1,0 +1,46 @@
+# Development source, tests, and examples
+src/
+tests/
+examples/
+demo/
+scripts/
+.github/
+docs/
+
+# Tooling and editor configuration
+tsconfig*.json
+guchho.test.config.ts
+.npmrc
+.vscode/
+.idea/
+.editorconfig
+
+# Repository-only release and community files
+CHANGELOG.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+SECURITY.md
+
+# Lockfiles and package manager logs
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local and generated output
+coverage/
+dist-bundle/
+.output/
+*.tgz
+*.tar.gz
+*.tsbuildinfo
+*.log
+.env
+.env.*
+
+# Editor and OS files
+.DS_Store
+Thumbs.db

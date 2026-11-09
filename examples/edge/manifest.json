@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Addonova Browser - Edge example",
+  "version": "1.0.0",
+  "description": "Minimal Microsoft Edge MV3 extension using @addonova/browser.",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Addonova Browser"
+  },
+  "permissions": ["storage", "tabs"]
+}

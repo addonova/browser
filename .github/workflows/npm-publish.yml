@@ -1,0 +1,70 @@
+name: npm publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Run all checks and a publish dry run without uploading
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    environment: npm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      - name: Verify package contents
+        run: npm pack --dry-run
+
+      - name: Verify release tag matches package version
+        if: github.event_name == 'release'
+        run: |
+          package_version="$(node -p "require('./package.json').version")"
+          release_version="${GITHUB_REF_NAME#v}"
+          if [ "$package_version" != "$release_version" ]; then
+            echo "package.json version ($package_version) does not match release tag ($release_version)" >&2
+            exit 1
+          fi
+
+      - name: Publish dry run
+        if: github.event_name == 'workflow_dispatch' && inputs.dry_run == true
+        run: npm publish --access public --dry-run
+
+      - name: Publish to npm
+        if: github.event_name == 'release' || inputs.dry_run == false
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

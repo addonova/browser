@@ -4,9 +4,6 @@ node_modules/
 # Build output
 dist/
 
-# Planing
-demo/
-PLAN.md
 
 # Logs
 *.log

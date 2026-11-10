@@ -110,42 +110,6 @@ export default {
 };
 ```
 
-### WXT
-
-WXT uses Vite and passes the selected browser to the Vite config function as
-`env.browser`. Use that value to choose the subpath:
-
-```ts
-import { defineConfig } from 'wxt';
-
-function packageEntry(browser: string): string {
-  if (browser === 'firefox') {
-    return '@addonova/browser/firefox';
-  }
-
-  if (browser === 'edge') {
-    return '@addonova/browser/edge';
-  }
-
-  return '@addonova/browser/chrome';
-}
-
-export default defineConfig({
-  vite: (env) => ({
-    resolve: {
-      alias: {
-        '@addonova/browser': packageEntry(env.browser),
-      },
-    },
-  }),
-});
-```
-
-This integration is verified with WXT 0.21.5 in `examples/wxt`: `wxt build -b
-chrome` emits `chrome-mv3`, `wxt build -b firefox` emits `firefox-mv2`, and each
-bundle contains only the selected adapter. Without the alias, WXT keeps runtime
-resolution and still works, but all adapters remain in the bundle.
-
 ## Compile-time definition
 
 The optional global definition `__ADDONOVA_BROWSER__` accepts the string

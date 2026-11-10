@@ -1,7 +1,6 @@
-# Development source, tests, and examples
+# Development source, tests, and scripts
 src/
 tests/
-examples/
 demo/
 scripts/
 .github/

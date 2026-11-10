@@ -1,19 +1,4 @@
-# @addonova/browser
-
-A small, Promise-based WebExtension API for Chrome, Chromium, Edge, and Firefox.
-It gives extension code one import surface across browsers, keeps synchronous
-APIs synchronous, exposes typed events unchanged, and fails explicitly when a
-browser does not support an API.
-
-- ESM-only, zero runtime dependencies.
-- Same API on Manifest V2 and Manifest V3 where the browser supports it.
-- Native `browser.*` Promises on Firefox; callback-to-Promise adaptation on
-  Chromium.
-- Runtime browser detection by default, with optional build-time target
-  selection and tree shaking.
-- No automatic permission requests and no silent API emulation.
-
-## 1. Introduction
+[![Addonova Browser Social Banner](https://raw.githubusercontent.com/addonova/.github/refs/heads/main/profile/image/addonova_browser_banner.png)](https://github.com/addonova)
 
 Browser extension APIs are similar but not identical. `@addonova/browser`
 normalizes the differences that can be normalized safely:
@@ -30,7 +15,7 @@ permissions, or emulate an API the browser does not provide. See the verified
 [compatibility matrix](docs/compatibility-matrix.md) for the exact support
 surface.
 
-## 2. Installation
+## Installation
 
 ```sh
 npm install @addonova/browser
@@ -52,7 +37,7 @@ Package entries:
 | `@addonova/browser/edge` | Fixed Edge target. |
 | `@addonova/browser/firefox` | Fixed Firefox target. |
 
-## 3. Quick start
+## Quick start
 
 ```ts
 import { action, storage, tabs } from '@addonova/browser';
@@ -84,7 +69,7 @@ runtime.onInstalled.addListener((details) => {
 });
 ```
 
-## 4. Browser compatibility
+## Browser compatibility
 
 The verified matrix is in
 [`docs/compatibility-matrix.md`](docs/compatibility-matrix.md). The short
@@ -105,7 +90,7 @@ version:
 Run `supports()` before using an optional API when an extension must work across
 older browser versions.
 
-## 5. API reference
+## API reference
 
 The root export exposes a `browser` object plus named namespaces:
 
@@ -173,7 +158,7 @@ Shared exports:
 - `callbackToPromise`, `promisifyMethod`, and event helpers for advanced
   integrations.
 
-## 6. TypeScript examples
+## TypeScript examples
 
 All public types are exported from the package root.
 
@@ -220,7 +205,7 @@ export async function sendHello(): Promise<void> {
 }
 ```
 
-## 7. Browser detection
+## Browser detection
 
 ```ts
 import { browserInfo, getBrowserInfo } from '@addonova/browser';
@@ -271,7 +256,7 @@ uses a separate Gecko adapter with native Promises. All entries expose the same
 public surface. Application code should normally import the root; the build
 integration chooses the subpath.
 
-## 10. Browser-specific tree shaking
+## Browser-specific tree shaking
 
 Use static imports so a bundler can remove unused APIs:
 
@@ -299,7 +284,7 @@ Edge plus shared Chromium code. Importing only `tabs` removes unrelated API
 modules. Dynamic access through the `browser` object intentionally retains every
 API. See [`docs/build-integration.md`](docs/build-integration.md).
 
-## 11. Build-time API selection
+## Build-time API selection
 
 The optional compile-time definition `__ADDONOVA_BROWSER__` accepts `'chrome'`,
 `'chromium'`, `'firefox'`, `'edge'`, or `'auto'`:
@@ -314,7 +299,7 @@ It makes target-dependent runtime behavior deterministic. It does not replace
 the subpath alias for code elimination. Invalid or missing values fall back to
 `'auto'`.
 
-## 12. Runtime resolution
+## Runtime resolution
 
 The default root import resolves the adapter on first use and memoizes it:
 
@@ -327,7 +312,7 @@ Runtime resolution always remains available. It does not require Addonova Build,
 a define, or an alias. Fixed subpaths skip detection and use their target
 provider directly.
 
-## 13. Manifest compatibility
+## Manifest compatibility
 
 The library does not create or edit `manifest.json`.
 
@@ -366,43 +351,7 @@ Register event listeners synchronously at the top level of a service worker or
 event page. Do not wait for asynchronous initialization before registering
 listeners.
 
-## 14. WXT integration
-
-WXT builds on Vite, so browser selection can use the package subpaths and a Vite
-alias. See [`examples/wxt`](examples/wxt) for a complete example.
-
-```ts
-import { defineConfig } from 'wxt';
-
-function packageEntry(browser: string): string {
-  if (browser === 'firefox') {
-    return '@addonova/browser/firefox';
-  }
-
-  if (browser === 'edge') {
-    return '@addonova/browser/edge';
-  }
-
-  return '@addonova/browser/chrome';
-}
-
-export default defineConfig({
-  vite: (env) => ({
-    resolve: {
-      alias: {
-        '@addonova/browser': packageEntry(env.browser),
-      },
-    },
-  }),
-});
-```
-
-This is verified with WXT 0.21.5 in `examples/wxt`: `wxt build -b chrome` emits
-`.output/chrome-mv3`, `wxt build -b firefox` emits `.output/firefox-mv2`, and
-each bundle contains only the selected adapter. Without an alias, WXT keeps
-runtime resolution and still works, but all adapters remain in the bundle.
-
-## 15. Error handling
+## Error handling
 
 ```ts
 import { BrowserApiError, runtime } from '@addonova/browser';
@@ -434,7 +383,7 @@ Error codes:
 
 No module fakes success, silently no-ops, or falls back to an unrequested API.
 
-## 16. Permissions
+## Permissions
 
 Permissions are never requested or granted automatically. Declare static
 permissions in the manifest and request optional permissions from a permitted
@@ -475,20 +424,12 @@ Static host permissions are granted at install time subject to browser policy.
 [`docs/api-compatibility.md`](docs/api-compatibility.md) and the
 [compatibility matrix](docs/compatibility-matrix.md).
 
-## 17. Contributing
-
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before changing code. Development
-commands:
-
-```sh
-npm install
-npm run typecheck
-npm run build
-npm test
-```
-
 Packaging and manual browser smoke-test steps are in
 [`docs/integration-testing.md`](docs/integration-testing.md).
 
 Do not publish to npm without explicit authorization. Security issues should be
-reported according to [`SECURITY.md`](SECURITY.md).
+reported according to [`SECURITY`](https://github.com/addonova/.github/blob/main/.github/SECURITY.md).
+
+## License
+
+Addonova is licensed under **MIT**. Copyright © [CodeHemu](https://github.com/code-hemu).

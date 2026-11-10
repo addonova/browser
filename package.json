@@ -1,7 +1,7 @@
 {
   "name": "@addonova/browser",
   "version": "0.1.0",
-  "description": "Unified, Promise-based Browser Extension APIs.",
+  "description": "Unified APIs for cross-browser extensions.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -39,7 +39,6 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "build:examples": "npm run build && node scripts/build-examples.mjs",
     "dev": "tsc -p tsconfig.build.json --watch",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "guchho-test run",

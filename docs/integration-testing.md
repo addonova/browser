@@ -1,8 +1,8 @@
 # Integration Testing
 
-Automated checks cover the package API, build-time selection, WXT integration,
-and package contents. Real-browser smoke tests are manual because they require
-browser binaries and a profile with unpacked-extension support.
+Automated checks cover the package API, build-time selection, and package
+contents. Real-browser smoke tests are manual because they require browser
+binaries and a profile with unpacked-extension support.
 
 ## Automated checks
 
@@ -12,22 +12,7 @@ Run from the repository root:
 npm run typecheck
 npm run build
 npm test
-npm run build:examples
 ```
-
-Build the WXT example separately:
-
-```sh
-cd examples/wxt
-npm install
-npm run build:chrome
-npm run build:firefox
-```
-
-Expected WXT artifacts:
-
-- `.output/chrome-mv3`
-- `.output/firefox-mv2`
 
 Validate the publishable package:
 
@@ -42,14 +27,13 @@ by the `esm-only` profile; `node16` from ESM and bundler resolution must pass.
 
 ## Manual browser matrix
 
-| Browser | Artifact | Manifest | Status |
+| Browser | Entry | Manifest | Status |
 | --- | --- | --- | --- |
-| Chrome | `examples/chrome/dist` | MV3 service worker | Documented, not run here |
+| Chrome | `@addonova/browser/chrome` | MV3 service worker | Documented, not run here |
 | Chromium | Use the root entry or `@addonova/browser/chromium` | MV3 service worker | Documented, not run here |
-| Edge | `examples/edge/dist` | MV3 service worker | Documented, not run here |
-| Firefox | `examples/firefox/dist` | MV3 event page | Documented, not run here |
-| Firefox MV2 | `examples/wxt/.output/firefox-mv2` | MV2 background script | Documented, not run here |
-| Chrome WXT | `examples/wxt/.output/chrome-mv3` | MV3 service worker | Documented, not run here |
+| Edge | `@addonova/browser/edge` | MV3 service worker | Documented, not run here |
+| Firefox | `@addonova/browser/firefox` | MV3 event page | Documented, not run here |
+| Firefox MV2 | `@addonova/browser/firefox` | MV2 background script | Documented, not run here |
 
 ## Smoke-test procedure
 
@@ -61,7 +45,7 @@ For each applicable artifact:
 3. Confirm the action badge changes to `ON`.
 4. Click the toolbar action and confirm the badge count increments.
 5. Inspect extension storage and confirm `installedReason`, `installedAt`, and
-   `clicks` are written. Edge and Firefox examples also write `browser` and
+   `clicks` are written. The Edge and Firefox adapters also write `browser` and
    `engine`.
 6. In Firefox, confirm the background console logs `Click count changed:` after
    a click.
@@ -70,10 +54,11 @@ For each applicable artifact:
 
 ## Expected differences
 
-- Chrome, Chromium, and Edge examples use MV3 service workers.
+- Chrome, Chromium, and Edge targets use MV3 service workers.
 - Firefox MV3 uses `background.scripts` and an event page.
-- Firefox MV2 is provided by the WXT example.
-- `browserInfo.name` reflects the fixed build target in the targeted examples;
-  the root entry reports the detected runtime target.
+- Firefox MV2 uses `background.scripts`, `browser_action`, and
+  `browser_specific_settings`.
+- `browserInfo.name` reflects the fixed build target when using a target
+  subpath; the root entry reports the detected runtime target.
 - Permissions are declared in the manifests and are never granted
   automatically by the library.

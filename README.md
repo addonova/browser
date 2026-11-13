@@ -9,6 +9,9 @@
     <a href="https://github.com/addonova/browser/graphs/contributors"><img src="https://img.shields.io/github/contributors/addonova/browser?labelColor=%23153c26&color=%23ccff00" alt="Contributors"></a>
     <a href="https://github.com/sponsors/code-hemu"><img src="https://img.shields.io/badge/Sponsor-GitHub-red?labelColor=%23153c26&color=%23ccff00" alt="Sponsor"></a>
   </p>
+  
+  **Unified API's for cross-browser extensions.**
+  
 </div>
 
 Browser extension APIs are similar but not identical. `@addonova/browser`

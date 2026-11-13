@@ -1,5 +1,16 @@
 [![Addonova Browser Social Banner](https://raw.githubusercontent.com/addonova/.github/refs/heads/main/profile/image/addonova_browser_banner.png)](https://github.com/addonova)
 
+<div align="center">
+  <p>
+    <a href="https://www.npmjs.com/package/@addonova/browser"><img src="https://img.shields.io/npm/v/@addonova/browser?labelColor=%23153c26&color=%23ccff00" alt="Version"></a>
+    <a href="https://nodejs.org/en/about/previous-releases"><img src="https://img.shields.io/node/v/@addonova/browser?labelColor=%23153c26&color=%23ccff00" alt="node compatibility"></a>
+    <a href="https://raw.githubusercontent.com/addonova/browser/refs/heads/main/LICENSE"><img src="https://img.shields.io/github/license/addonova/browser?labelColor=%23153c26&color=%23ccff00" alt="License"></a>
+    <a href="https://github.com/addonova/browser/issues"><img src="https://img.shields.io/github/issues/addonova/browser?labelColor=%23153c26&color=%23ccff00" alt="Issues"></a>
+    <a href="https://github.com/addonova/browser/graphs/contributors"><img src="https://img.shields.io/github/contributors/addonova/browser?labelColor=%23153c26&color=%23ccff00" alt="Contributors"></a>
+    <a href="https://github.com/sponsors/code-hemu"><img src="https://img.shields.io/badge/Sponsor-GitHub-red?labelColor=%23153c26&color=%23ccff00" alt="Sponsor"></a>
+  </p>
+</div>
+
 Browser extension APIs are similar but not identical. `@addonova/browser`
 normalizes the differences that can be normalized safely:
 

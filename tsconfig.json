@@ -4,6 +4,15 @@
     "lib": ["ES2023", "DOM"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "paths": {
+      "@addonova/browser": ["./src/index.ts"],
+      "@addonova/browser/testing": ["./src/testing/index.ts"],
+      "@addonova/browser/testing/setup": ["./src/testing/setup.ts"],
+      "@addonova/browser/chrome": ["./src/entries/chrome.ts"],
+      "@addonova/browser/chromium": ["./src/entries/chromium.ts"],
+      "@addonova/browser/edge": ["./src/entries/edge.ts"],
+      "@addonova/browser/firefox": ["./src/entries/firefox.ts"]
+    },
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
     "types": ["node"],

@@ -107,6 +107,10 @@ export type {
   StorageAreaName,
   StorageChange,
   StorageChanges,
+  StorageItem,
+  StorageItemMeta,
+  StorageItemOptions,
+  StorageItemValue,
   StorageItems,
   StorageKeys,
 } from './storage.ts';

@@ -5,6 +5,28 @@ All notable changes to `@addonova/browser` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-11-13
+
+### Added
+
+- Typed storage items through `storage.defineItem()`, with fallbacks, lazy
+  initialization, versioned migrations, metadata, and change watchers.
+- Type-safe extension messaging with `defineExtensionMessaging()` and
+  `defineProxyService()` for exposing async services across extension contexts.
+- Content-script helpers: `createContentScriptContext()`, `injectScript()`, and
+  auto-invalidating timers, animation frames, and event listeners.
+- Content-script UI helpers: `createIntegratedUi()`, `createShadowRootUi()`,
+  `createIframeUi()`, and `autoMount()`.
+- i18n helpers: `createI18nHelper()`, `formatMessage()`, `i18nHelper`, and `t`.
+- An in-memory fake browser API with events, storage, tabs, permissions,
+  scripting, i18n, and notifications.
+- A Vitest plugin and setup entry point:
+  `@addonova/browser/vitest` and `@addonova/browser/testing/setup`.
+- Pure factories `createExtensionMessaging()`, `createProxyServices()`, and
+  `createInjectScript()` for custom runtimes, with tree-shakeable bound
+  utilities in every browser entry point.
+- A Playwright end-to-end testing guide.
+
 ## [0.1.0]
 
 ### Added

@@ -77,3 +77,79 @@ export {
 } from './api/singletons.ts';
 
 export type * from './types/index.ts';
+
+export {
+  createStorageArea,
+  createStorageItem,
+} from './api/storage/index.ts';
+export type {
+  StorageItem,
+  StorageItemMeta,
+  StorageItemOptions,
+  StorageItemValue,
+} from './api/storage/index.ts';
+
+export { createExtensionMessaging } from './messaging/index.ts';
+export type {
+  ExtensionMessenger,
+  MessageContext,
+  MessageData,
+  MessageHandler,
+  MessageKeys,
+  MessageProtocol,
+  MessageReturn,
+  MessageSendArgs,
+  MessagingRuntime,
+} from './messaging/index.ts';
+export { defineExtensionMessaging } from './messaging/root.ts';
+export { createProxyServices } from './messaging/proxy.ts';
+export type {
+  AsyncService,
+  DefineProxyService,
+  MessengerFactory,
+  ProxyServiceFactory,
+  ProxyServiceRegistration,
+} from './messaging/proxy.ts';
+export { defineProxyService } from './messaging/root.ts';
+
+export {
+  createContentScriptContext,
+  createIframeUi,
+  createIntegratedUi,
+  createInjectScript,
+  createShadowRootUi,
+} from './content/index.ts';
+export { injectScript } from './content/inject-root.ts';
+export type {
+  AutoMountOptions,
+  BaseUiOptions,
+  ContentScriptContext,
+  ContentScriptContextOptions,
+  ContentScriptRuntime,
+  ContentScriptTimer,
+  ContentScriptUi,
+  IframeUiOptions,
+  InjectScript,
+  InjectScriptApis,
+  InjectScriptOptions,
+  IntegratedUiOptions,
+  ShadowRootContentScriptUi,
+  ShadowRootUiOptions,
+  UiAlignment,
+  UiAnchor,
+  UiAppendMode,
+  UiPosition,
+} from './content/index.ts';
+
+export {
+  createI18nHelper,
+  formatMessage,
+  i18nHelper,
+  t,
+} from './i18n/index.ts';
+export type {
+  I18nHelper,
+  I18nHelperOptions,
+  I18nMessageApi,
+  I18nSubstitutions,
+} from './i18n/index.ts';

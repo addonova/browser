@@ -1,9 +1,9 @@
 import type { BrowserAdapter } from '../../adapters/types.ts';
 import type {
   StorageApi,
-  StorageArea,
   StorageAreaName,
-  StorageItems,
+  StorageItem,
+  StorageItemOptions,
   StorageKeys,
 } from '../../types/storage.ts';
 import {
@@ -11,53 +11,17 @@ import {
   isCapabilityAvailable,
   requireEvent,
 } from '../helpers.ts';
-
-export function createStorageArea<
-  T extends StorageItems = StorageItems,
->(
-  adapter: BrowserAdapter,
-  area: StorageAreaName,
-): StorageArea<T> {
-  const path = (method: string) =>
-    ['storage', area, method] as const;
-
-  const get = ((keys?: unknown): Promise<StorageItems> => {
-    const target = path('get');
-
-    return keys === undefined
-      ? callAsync<StorageItems>(adapter, target)
-      : callAsync<StorageItems>(adapter, target, keys);
-  }) as unknown as StorageArea<T>['get'];
-
-  return {
-    get,
-    set(items: Partial<T> | StorageItems): Promise<void> {
-      return callAsync<void>(adapter, path('set'), items);
-    },
-    remove(
-      keys:
-        | keyof T
-        | readonly (keyof T)[]
-        | StorageKeys
-        | null,
-    ): Promise<void> {
-      return callAsync<void>(adapter, path('remove'), keys);
-    },
-    clear(): Promise<void> {
-      return callAsync<void>(adapter, path('clear'));
-    },
-    getBytesInUse(keys?: StorageKeys | null): Promise<number> {
-      const target = path('getBytesInUse');
-
-      return keys === undefined || keys === null
-        ? callAsync<number>(adapter, target)
-        : callAsync<number>(adapter, target, keys);
-    },
-  };
-}
+import { createStorageArea } from './area.ts';
+import { createStorageItem } from './item.ts';
 
 export function createStorageApi(adapter: BrowserAdapter): StorageApi {
   return {
+    defineItem<T>(
+      key: string,
+      options?: StorageItemOptions<T>,
+    ): StorageItem<T> {
+      return createStorageItem(adapter, key, options);
+    },
     get local() {
       return createStorageArea(adapter, 'local');
     },
@@ -92,12 +56,18 @@ export function createStorageApi(adapter: BrowserAdapter): StorageApi {
 }
 
 
+export { createStorageArea } from './area.ts';
+export { createStorageItem } from './item.ts';
+
 export type {
   StorageApi,
-  StorageArea,
   StorageAreaName,
   StorageChange,
   StorageChanges,
+  StorageItem,
+  StorageItemMeta,
+  StorageItemOptions,
+  StorageItemValue,
   StorageItems,
   StorageKeys,
 } from '../../types/storage.ts';

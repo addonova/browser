@@ -18,12 +18,18 @@ Validate the publishable package:
 
 ```sh
 npm pack
-npx publint ./addonova-browser-0.1.0.tgz
-npx @arethetypeswrong/cli ./addonova-browser-0.1.0.tgz --profile esm-only
+npx publint ./addonova-browser-0.2.0.tgz
+npx @arethetypeswrong/cli ./addonova-browser-0.2.0.tgz --profile esm-only
 ```
 
 The package is ESM-only. The `node16-cjs` and `node10` resolutions are ignored
 by the `esm-only` profile; `node16` from ESM and bundler resolution must pass.
+
+## Playwright end-to-end tests
+
+For automated Chromium coverage, load the Addonova build output in a persistent
+Playwright context. The setup, fixtures, and common pitfalls are documented in
+[`playwright-e2e.md`](playwright-e2e.md).
 
 ## Manual browser matrix
 

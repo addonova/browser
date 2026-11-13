@@ -69,6 +69,252 @@ runtime.onInstalled.addListener((details) => {
 });
 ```
 
+## Runtime utilities
+
+### Typed storage
+
+Use `storage.defineItem()` to keep a value typed, provide a fallback or lazy
+initializer, and run versioned migrations:
+
+```ts
+import { storage } from '@addonova/browser';
+
+interface Settings {
+  theme: 'light' | 'dark';
+  compact: boolean;
+}
+
+const settings = storage.defineItem<Settings>('settings', {
+  area: 'local',
+  fallback: { theme: 'light', compact: false },
+  version: 2,
+  migrations: {
+    2(value) {
+      return { compact: false, ...(value as Partial<Settings>) };
+    },
+  },
+});
+
+const current = await settings.getValue();
+await settings.setValue({ ...current, theme: 'dark' });
+
+const stop = settings.watch((newValue, oldValue) => {
+  console.log('settings changed', oldValue, newValue);
+});
+stop();
+```
+
+`getMeta()` and `setMeta()` expose the stored item version. `removeValue()`
+deletes the value; the next read falls back or initializes again.
+
+### Type-safe messaging
+
+Define a message protocol once and share it between the sender and receiver:
+
+```ts
+import { defineExtensionMessaging } from '@addonova/browser';
+
+interface Protocol {
+  ping(data: { at: number }): { at: number };
+  add(a: number, b: number): number;
+}
+
+const messaging = defineExtensionMessaging<Protocol>();
+
+// Background or any context with a listener.
+messaging.onMessage('ping', ({ data, sender }) => {
+  console.log('ping from', sender.id, data.at);
+
+  return { at: Date.now() };
+});
+
+// Any extension context.
+const response = await messaging.sendMessage('ping', { at: Date.now() });
+```
+
+Errors thrown by a handler are serialized and rethrown on the sender. Use
+`defineProxyService()` when the service has many methods:
+
+```ts
+import { defineProxyService } from '@addonova/browser';
+
+const [registerCounter, getCounter] = defineProxyService(
+  'counter',
+  () => {
+    let value = 0;
+
+    return {
+      add(amount: number) {
+        value += amount;
+        return value;
+      },
+      read() {
+        return value;
+      },
+    };
+  },
+);
+
+registerCounter();
+const counter = getCounter();
+
+await counter.add(2);
+await counter.read();
+registerCounter.dispose();
+```
+
+### Content scripts
+
+`createContentScriptContext()` tracks timers, animation frames, and listeners
+and invalidates them together when the content script is unloaded:
+
+```ts
+import {
+  createContentScriptContext,
+  injectScript,
+} from '@addonova/browser';
+
+const ctx = createContentScriptContext();
+
+ctx.setTimeout(() => {
+  console.log('still valid:', ctx.isValid);
+}, 1000);
+
+ctx.addEventListener(document, 'click', () => {
+  console.log('clicked');
+});
+
+ctx.onInvalidated(() => {
+  console.log('content script invalidated');
+});
+
+await injectScript('/injected.js', { allFrames: false });
+```
+
+Add `validateRuntime: false` when a test environment does not expose
+`runtime.id`.
+
+### Content-script UI
+
+Mount UI into the page, a shadow root, or an iframe:
+
+```ts
+import {
+  createIntegratedUi,
+  createShadowRootUi,
+} from '@addonova/browser';
+
+const inline = createIntegratedUi(ctx, {
+  anchor: '#app',
+  append: 'last',
+  onMount(container) {
+    const button = document.createElement('button');
+    button.textContent = 'Addonova';
+    container.append(button);
+
+    return button;
+  },
+});
+
+await inline.mount();
+inline.remove();
+
+const panel = createShadowRootUi(ctx, {
+  anchor: 'body',
+  position: 'overlay',
+  alignment: 'bottom-right',
+  css: ':host { all: initial; } .panel { font: 14px sans-serif; }',
+  onMount(container) {
+    const element = document.createElement('div');
+    element.className = 'panel';
+    element.textContent = 'Shadow UI';
+    container.append(element);
+
+    return element;
+  },
+});
+
+await panel.mount();
+panel.autoMount();
+```
+
+UI helpers support `anchor` selectors or elements, `append` modes
+(`first`, `last`, `before`, `after`, `replace`), `position`
+(`inline`, `overlay`, `modal`), `alignment`, `zIndex`, and `onRemove`.
+`autoMount()` mounts when the anchor appears, remounts when it is removed, and
+stops on context invalidation.
+
+### i18n
+
+```ts
+import { createI18nHelper, formatMessage, t } from '@addonova/browser';
+
+const i18nHelper = createI18nHelper({ fallbackToKey: true });
+
+i18nHelper.locale;
+i18nHelper.t('greeting', 'Ada');
+i18nHelper.raw('greeting', 'Ada');
+
+t('items_selected', ['3']);
+formatMessage('Selected $1 item(s)', '3');
+```
+
+`t()` falls back to the message name when the browser returns an empty string.
+
+## Testing
+
+### Fake browser
+
+`@addonova/browser/testing` provides an in-memory implementation of the runtime
+API. It records storage, tabs, permissions, notifications, alarms, and events,
+and routes `runtime.sendMessage()` through `onMessage` listeners.
+
+```ts
+import {
+  createFakeBrowser,
+  installFakeBrowser,
+  resetFakeBrowser,
+  uninstallFakeBrowser,
+} from '@addonova/browser/testing';
+
+const fake = installFakeBrowser({ target: 'chrome' });
+
+await fake.storage.local.set({ enabled: true });
+fake.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  sendResponse({ ok: true });
+  return true;
+});
+
+resetFakeBrowser();
+uninstallFakeBrowser();
+```
+
+Use `createFakeBrowser()` for isolated instances and `fakeBrowser` for the
+shared default. `reset()` clears state while keeping listeners.
+
+### Vitest plugin
+
+The plugin installs the fake browser before each test:
+
+```ts
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+import { addonovaFakeBrowser } from '@addonova/browser/vitest';
+
+export default defineConfig({
+  plugins: [addonovaFakeBrowser()],
+});
+```
+
+For manual setup, import `@addonova/browser/testing/setup` from
+`test.setupFiles`. The plugin requires Vitest 3 or newer; Vitest remains an
+optional peer dependency.
+
+### End-to-end tests
+
+See [`docs/playwright-e2e.md`](docs/playwright-e2e.md) for a Playwright guide
+that loads the built extension into a persistent Chromium context.
+
 ## Browser compatibility
 
 The verified matrix is in

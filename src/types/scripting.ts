@@ -15,6 +15,17 @@ export interface ScriptInjection<
   readonly injectImmediately?: boolean;
 }
 
+export interface ScriptingApi {
+  executeScript<
+    Result = unknown,
+    Args extends readonly unknown[] = readonly unknown[],
+  >(
+    injection: ScriptInjection<Args> | readonly ScriptInjection<Args>[],
+  ): Promise<InjectionResult<Result>[]>;
+  insertCSS(injection: CSSInjection | readonly CSSInjection[]): Promise<void>;
+  removeCSS(injection: CSSInjection | readonly CSSInjection[]): Promise<void>;
+}
+
 export interface CSSInjection {
   readonly target: InjectionTarget;
   readonly css?: string;
@@ -26,12 +37,4 @@ export interface InjectionResult<Result = unknown> {
   readonly frameId: number;
   readonly result?: Result;
   readonly error?: string;
-}
-
-export interface ScriptingApi {
-  executeScript<Result = unknown>(
-    injection: ScriptInjection | readonly ScriptInjection[],
-  ): Promise<InjectionResult<Result>[]>;
-  insertCSS(injection: CSSInjection | readonly CSSInjection[]): Promise<void>;
-  removeCSS(injection: CSSInjection | readonly CSSInjection[]): Promise<void>;
 }

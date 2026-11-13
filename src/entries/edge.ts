@@ -36,6 +36,11 @@ import {
   isSupportedWith,
   supportsWith,
 } from './support.ts';
+import {
+  createInjectScript,
+  createMessagingFactory,
+  createProxyServices,
+} from './utilities.ts';
 
 let cached: BrowserAdapter | null | undefined;
 
@@ -126,6 +131,15 @@ export function getAvailability(
 export function isBrowserSupported(): boolean {
   return isSupportedWith(provider);
 }
+
+export const defineExtensionMessaging = /*#__PURE__*/ createMessagingFactory(runtime);
+export const defineProxyService = /*#__PURE__*/ createProxyServices(
+  defineExtensionMessaging,
+);
+export const injectScript = /*#__PURE__*/ createInjectScript({
+  scripting,
+  tabs,
+});
 
 export * from './shared-exports.ts';
 export type * from '../types/index.ts';

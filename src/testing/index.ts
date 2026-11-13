@@ -1,0 +1,25 @@
+export {
+  createFakeBrowser,
+  createFakeEvent,
+  fakeBrowser,
+  installFakeBrowser,
+  resetFakeBrowser,
+  uninstallFakeBrowser,
+} from './fake-browser.ts';
+export type {
+  FakeAction,
+  FakeAlarms,
+  FakeBrowser,
+  FakeBrowserOptions,
+  FakeEvent,
+  FakeI18n,
+  FakeNotifications,
+  FakePermissions,
+  FakePort,
+  FakeRuntime,
+  FakeScripting,
+  FakeStorage,
+  FakeStorageArea,
+  FakeTabs,
+  FakeWindows,
+} from './fake-browser.ts';

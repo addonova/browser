@@ -182,6 +182,32 @@ describe('API-level tree shaking', () => {
     expect(has(result, 'browser/resolve.js')).toBe(true);
   });
 
+  it('keeps messaging free of script and tab APIs in a Chrome build', async () => {
+    const result = await bundle('messaging', 'chrome');
+
+    expect(has(result, 'messaging/index.js')).toBe(true);
+    expect(has(result, 'content/inject-script.js')).toBe(false);
+    expect(has(result, 'api/scripting/index.js')).toBe(false);
+    expect(has(result, 'api/tabs/index.js')).toBe(false);
+    expect(has(result, 'adapters/chrome/index.js')).toBe(true);
+    expect(has(result, 'adapters/chromium/index.js')).toBe(true);
+    expect(has(result, 'adapters/edge/index.js')).toBe(false);
+    expect(has(result, 'adapters/firefox/index.js')).toBe(false);
+    expect(has(result, 'browser/resolve.js')).toBe(false);
+  });
+
+  it('keeps script injection free of messaging in a Chrome build', async () => {
+    const result = await bundle('inject', 'chrome');
+
+    expect(has(result, 'content/inject-script.js')).toBe(true);
+    expect(has(result, 'api/scripting/index.js')).toBe(true);
+    expect(has(result, 'api/tabs/index.js')).toBe(true);
+    expect(has(result, 'messaging/index.js')).toBe(false);
+    expect(has(result, 'messaging/proxy.js')).toBe(false);
+    expect(has(result, 'adapters/firefox/index.js')).toBe(false);
+    expect(has(result, 'browser/resolve.js')).toBe(false);
+  });
+
   it('does not remove dynamically accessed APIs', async () => {
     const result = await bundle('dynamic', 'runtime');
 

@@ -11,8 +11,11 @@ export function createScriptingApi(
   adapter: BrowserAdapter,
 ): ScriptingApi {
   return {
-    executeScript<Result = unknown>(
-      injection: ScriptInjection | readonly ScriptInjection[],
+    executeScript<
+      Result = unknown,
+      Args extends readonly unknown[] = readonly unknown[],
+    >(
+      injection: ScriptInjection<Args> | readonly ScriptInjection<Args>[],
     ): Promise<InjectionResult<Result>[]> {
       return callAsync<InjectionResult<Result>[]>(
         adapter,

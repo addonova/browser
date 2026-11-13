@@ -7,7 +7,6 @@ import {
   resetFakeBrowser,
   uninstallFakeBrowser,
 } from '../../src/testing/fake-browser.ts';
-import { addonovaFakeBrowser } from '../../src/testing/vitest.ts';
 
 describe('fake browser', () => {
   it('routes runtime messages through onMessage listeners', async () => {
@@ -148,21 +147,5 @@ describe('fake browser', () => {
     expect(
       (globalThis as Record<string, unknown>).chrome,
     ).toBeUndefined();
-  });
-});
-
-describe('vitest fake browser plugin', () => {
-  it('registers the setup file', () => {
-    const plugin = addonovaFakeBrowser();
-    const config = (
-      plugin.config as unknown as () => {
-        test?: { setupFiles?: readonly string[] };
-      }
-    )();
-
-    expect(plugin.name).toBe('addonova:fake-browser');
-    expect(config.test?.setupFiles).toContain(
-      '@addonova/browser/testing/setup',
-    );
   });
 });

@@ -292,23 +292,22 @@ uninstallFakeBrowser();
 Use `createFakeBrowser()` for isolated instances and `fakeBrowser` for the
 shared default. `reset()` clears state while keeping listeners.
 
-### Vitest plugin
+### Guchho Test setup
 
-The plugin installs the fake browser before each test:
+Register the setup file so the fake browser is installed before each test:
 
 ```ts
-// vitest.config.ts
-import { defineConfig } from 'vitest/config';
-import { addonovaFakeBrowser } from '@addonova/browser/vitest';
+// guchho.test.config.ts
+import { defineConfig } from '@guchho/test';
 
 export default defineConfig({
-  plugins: [addonovaFakeBrowser()],
+  setupFiles: ['@addonova/browser/testing/setup'],
 });
 ```
 
-For manual setup, import `@addonova/browser/testing/setup` from
-`test.setupFiles`. The plugin requires Vitest 3 or newer; Vitest remains an
-optional peer dependency.
+The setup entry installs the fake browser before the suite, resets it before
+each test, and uninstalls it afterwards. `@guchho/test` remains an optional peer
+dependency.
 
 ### End-to-end tests
 

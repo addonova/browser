@@ -20,8 +20,7 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - i18n helpers: `createI18nHelper()`, `formatMessage()`, `i18nHelper`, and `t`.
 - An in-memory fake browser API with events, storage, tabs, permissions,
   scripting, i18n, and notifications.
-- A Vitest plugin and setup entry point:
-  `@addonova/browser/vitest` and `@addonova/browser/testing/setup`.
+- A Guchho Test setup entry point: `@addonova/browser/testing/setup`.
 - Pure factories `createExtensionMessaging()`, `createProxyServices()`, and
   `createInjectScript()` for custom runtimes, with tree-shakeable bound
   utilities in every browser entry point.

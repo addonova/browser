@@ -1,4 +1,4 @@
-import { afterAll, beforeEach } from 'vitest';
+import { afterAll, beforeEach } from '@guchho/test';
 import {
   installFakeBrowser,
   resetFakeBrowser,

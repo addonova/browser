@@ -480,6 +480,10 @@ Detection is feature-first: it checks the extension runtime and API shape before
 parsing the user agent. Outside an extension, the package returns an unknown
 environment instead of throwing at import time.
 
+When imported from a fixed subpath such as `@addonova/browser/chrome`,
+`getBrowserInfo()` reports that entry's target and does not consult the
+build-time target fallback.
+
 ## 8. Feature detection
 
 ```ts
@@ -543,6 +547,10 @@ Edge plus shared Chromium code. Importing only `tabs` removes unrelated API
 modules. Dynamic access through the `browser` object intentionally retains every
 API. See [`docs/build-integration.md`](docs/build-integration.md).
 
+Fixed subpaths also avoid runtime compile-target validation. A bundle that only
+imports `getBrowserInfo()` from `@addonova/browser/chrome` does not retain
+`BROWSER_TARGETS` or the `build/target` fallback logic.
+
 ## Build-time API selection
 
 The optional compile-time definition `__ADDONOVA_BROWSER__` accepts `'chrome'`,
@@ -558,6 +566,10 @@ It makes target-dependent runtime behavior deterministic. It does not replace
 the subpath alias for code elimination. Invalid or missing values fall back to
 `'auto'`.
 
+Fixed subpaths already know their target, so they skip the compile-time target
+fallback entirely. This keeps `BROWSER_TARGETS` and `build/target` out of
+fixed-target bundles that only need `getBrowserInfo()`.
+
 ## Runtime resolution
 
 The default root import resolves the adapter on first use and memoizes it:
@@ -568,8 +580,9 @@ The default root import resolves the adapter on first use and memoizes it:
 4. Fall back to an unknown environment that reports explicit unsupported errors.
 
 Runtime resolution always remains available. It does not require Addonova Build,
-a define, or an alias. Fixed subpaths skip detection and use their target
-provider directly.
+a define, or an alias. Fixed subpaths still locate the extension runtime for
+manifest metadata, but they use their target provider directly instead of
+resolving the target name at runtime.
 
 ## Manifest compatibility
 

@@ -57,18 +57,37 @@ export function requireNamespace<T = unknown>(
   return value;
 }
 
+interface ResolvedMethod {
+  readonly method: AnyFunction;
+  readonly receiver: unknown;
+}
+
+function resolveMethod(
+  adapter: BrowserAdapter,
+  path: ApiPath,
+): ResolvedMethod {
+  requireCapability(adapter, path);
+  const [namespace, ...rest] = path;
+  let receiver: unknown = adapter.namespace(namespace);
+  let current: unknown = receiver;
+
+  for (const key of rest) {
+    receiver = current;
+    current = readProperty(current, key);
+  }
+
+  if (typeof current !== 'function') {
+    throw unsupportedApiError(path.join('.'));
+  }
+
+  return { method: current as AnyFunction, receiver };
+}
+
 export function requireMethod<FunctionType extends AnyFunction>(
   adapter: BrowserAdapter,
   path: ApiPath,
 ): FunctionType {
-  requireCapability(adapter, path);
-  const method = readPathValue(adapter, path);
-
-  if (typeof method !== 'function') {
-    throw unsupportedApiError(path.join('.'));
-  }
-
-  return method as FunctionType;
+  return resolveMethod(adapter, path).method as FunctionType;
 }
 
 export function requireEvent<TEvent extends BrowserEvent>(
@@ -90,10 +109,10 @@ export function callSync<Result>(
   path: ApiPath,
   ...args: unknown[]
 ): Result {
-  const method = requireMethod<AnyFunction>(adapter, path);
+  const { method, receiver } = resolveMethod(adapter, path);
 
   try {
-    return method(...args) as Result;
+    return method.call(receiver, ...args) as Result;
   } catch (error) {
     throw normalizeBrowserApiError(error, { api: path.join('.') });
   }
@@ -104,12 +123,14 @@ export function callAsync<Result>(
   path: ApiPath,
   ...args: unknown[]
 ): Promise<Result> {
-  const method = requireMethod<AnyFunction>(adapter, path);
+  const { method, receiver } = resolveMethod(adapter, path);
   const api = path.join('.');
 
   if (!adapter.callbackBased) {
     try {
-      return Promise.resolve(method(...args) as Result | PromiseLike<Result>);
+      return Promise.resolve(
+        method.call(receiver, ...args) as Result | PromiseLike<Result>,
+      );
     } catch (error) {
       return Promise.reject(normalizeBrowserApiError(error, { api }));
     }
@@ -117,7 +138,7 @@ export function callAsync<Result>(
 
   return callbackToPromise<Result>(
     (callback) => {
-      method(...args, callback);
+      method.call(receiver, ...args, callback);
     },
     { scope: adapter.api, api },
   );
@@ -128,11 +149,11 @@ export function callVoid(
   path: ApiPath,
   ...args: unknown[]
 ): Promise<void> {
-  const method = requireMethod<AnyFunction>(adapter, path);
+  const { method, receiver } = resolveMethod(adapter, path);
   const api = path.join('.');
 
   try {
-    const result = method(...args);
+    const result = method.call(receiver, ...args);
 
     return Promise.resolve(result).then(
       () => undefined,

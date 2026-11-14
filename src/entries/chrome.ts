@@ -21,7 +21,7 @@ import { createWebNavigationApi } from '../api/web-navigation/index.ts';
 import { createWebRequestApi } from '../api/web-request/index.ts';
 import { createWindowsApi } from '../api/windows/index.ts';
 import { detectBrowser } from '../browser/detect.ts';
-import { readManifestVersion } from '../browser/info.ts';
+import { readManifestVersion } from '../browser/info-core.ts';
 import type { BrowserInfo, BrowserInfoOptions } from '../browser/info.ts';
 import type {
   ApiAvailability,

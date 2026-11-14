@@ -158,6 +158,41 @@ describe('storage module', () => {
     ).resolves.toBe(42);
   });
 
+  it('invokes area methods with the area as the receiver', async () => {
+    const area = {
+      data: new Map<string, unknown>(),
+      set(
+        this: { data: Map<string, unknown> },
+        items: Record<string, unknown>,
+        callback: () => void,
+      ) {
+        if (!(this.data instanceof Map)) {
+          throw new TypeError('Illegal invocation');
+        }
+
+        for (const [key, value] of Object.entries(items)) {
+          this.data.set(key, value);
+        }
+
+        callback();
+      },
+    };
+    const api = {
+      storage: {
+        local: area,
+        sync: createAreaFixture().area,
+        session: createAreaFixture().area,
+      },
+    };
+    const storage = createStorageApi(
+      createChromeAdapter({ api, manifestVersion: 3 }),
+    );
+
+    await storage.local.set({ theme: 'dark' });
+
+    expect(area.data.get('theme')).toBe('dark');
+  });
+
   it('passes storage change events through unchanged', () => {
     const { storage, onChanged } = createStorageFixture();
 

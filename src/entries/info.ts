@@ -1,25 +1,21 @@
-import {
-  getBrowserInfo as readBrowserInfo,
-} from '../browser/info.ts';
-import type {
-  BrowserInfo,
-  BrowserInfoOptions,
-} from '../browser/info.ts';
+import { readBrowserInfoForTarget } from '../browser/info-core.ts';
+import type { BrowserInfo } from '../browser/info-core.ts';
+import type { BrowserInfoOptions } from '../browser/info.ts';
 import type { BrowserTarget } from '../shared/capabilities.ts';
 
 export function createFixedBrowserInfo(target: BrowserTarget): BrowserInfo {
   return {
     get name() {
-      return readBrowserInfo({ target }).name;
+      return readBrowserInfoForTarget(target).name;
     },
     get version() {
-      return readBrowserInfo({ target }).version;
+      return readBrowserInfoForTarget(target).version;
     },
     get engine() {
-      return readBrowserInfo({ target }).engine;
+      return readBrowserInfoForTarget(target).engine;
     },
     get manifestVersion() {
-      return readBrowserInfo({ target }).manifestVersion;
+      return readBrowserInfoForTarget(target).manifestVersion;
     },
   };
 }
@@ -28,5 +24,5 @@ export function getFixedBrowserInfo(
   target: BrowserTarget,
   options: Omit<BrowserInfoOptions, 'target'> = {},
 ): BrowserInfo {
-  return readBrowserInfo({ ...options, target });
+  return readBrowserInfoForTarget(target, options);
 }

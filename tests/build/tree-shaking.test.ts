@@ -217,6 +217,14 @@ describe('API-level tree shaking', () => {
     expect(has(result, 'api/bookmarks/index.js')).toBe(true);
     expect(has(result, 'api/downloads/index.js')).toBe(true);
   });
+
+  it('keeps compile-target detection out of fixed-target info builds', async () => {
+    const result = await bundle('info', 'chrome');
+
+    expect(has(result, 'browser/info.js')).toBe(false);
+    expect(has(result, 'build/target.js')).toBe(false);
+    expect(text(result)).not.toContain('BROWSER_TARGETS');
+  });
 });
 
 describe('bundle behavior', () => {

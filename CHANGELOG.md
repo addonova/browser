@@ -5,6 +5,17 @@ All notable changes to `@addonova/browser` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-11-14
+
+### Fixed
+
+- Browser API methods are now invoked with their owning namespace as the
+  receiver, fixing `Illegal invocation` errors from callback-based storage
+  methods in Chrome.
+- Fixed-target entry points no longer retain compile-target detection, so
+  browser-specific bundles no longer include `BROWSER_TARGETS` and
+  `build/target` when only `getBrowserInfo()` is used.
+
 ## [0.2.0] - 2026-11-13
 
 ### Added

@@ -78,6 +78,7 @@
     "type": "git",
     "url": "git+https://github.com/addonova/browser.git"
   },
+  "homepage": "https://addonova.github.io/documentation/",
   "allowScripts": {
     "guchho@1.0.9": true
   },
